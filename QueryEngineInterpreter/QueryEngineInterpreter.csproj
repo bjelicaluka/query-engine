@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net472</TargetFramework>
+    </PropertyGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\QueryEngineModel\QueryEngineModel.csproj" />
+      <ProjectReference Include="..\QueryEngine\QueryEngine.csproj" />
+    </ItemGroup>
+
+</Project>
