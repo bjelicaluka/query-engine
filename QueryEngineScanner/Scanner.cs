@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Text.RegularExpressions;
-using QueryEngineModel.Tokens;
+using QueryEngineCore.Contracts;
+using QueryEngineCore.Contracts.Tokens;
 
 namespace QueryEngineScanner
 {
-    public class Scanner
+    public class Scanner : IScanner
     {
         private readonly IDictionary<string, TokenType> _tokenRegistry = new Dictionary<string, TokenType>
         {

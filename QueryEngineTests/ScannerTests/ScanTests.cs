@@ -1,13 +1,14 @@
 using System.Linq;
 using NUnit.Framework;
-using QueryEngineModel.Tokens;
+using QueryEngineCore.Contracts;
+using QueryEngineCore.Contracts.Tokens;
 using QueryEngineScanner;
 
 namespace QueryEngineTests.ScannerTests
 {
     public class ScanTests
     {
-        private Scanner _scanner;
+        private IScanner _scanner;
         
         [SetUp]
         public void Setup()

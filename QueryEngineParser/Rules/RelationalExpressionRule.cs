@@ -1,8 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using QueryEngineModel.AST;
-using QueryEngineModel.Tokens;
+using QueryEngineCore.Contracts.Rules;
+using QueryEngineCore.Contracts.Tokens;
+using QueryEngineParser.AST;
 using QueryEngineParser.Utils;
 
 namespace QueryEngineParser.Rules
@@ -28,6 +28,7 @@ namespace QueryEngineParser.Rules
             return new Match { Index = -1 };
         }
 
+        // Id RelOp String
         private Match MatchIdString(IEnumerable<Token> tokens)
         {
             var tokenList = tokens.ToList();
@@ -66,6 +67,7 @@ namespace QueryEngineParser.Rules
             };
         }
         
+        // Id RelOp Number
         private Match MatchIdNum(IEnumerable<Token> tokens)
         {
             var tokenList = tokens.ToList();
@@ -104,6 +106,7 @@ namespace QueryEngineParser.Rules
             };
         }
         
+        // String RelOp Id
         private Match MatchStringId(IEnumerable<Token> tokens)
         {
             var tokenList = tokens.ToList();
@@ -142,6 +145,7 @@ namespace QueryEngineParser.Rules
             };
         }
         
+        // Number RelOp Id
         private Match MatchNumId(IEnumerable<Token> tokens)
         {
             var tokenList = tokens.ToList();

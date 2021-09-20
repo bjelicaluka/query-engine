@@ -1,11 +1,12 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using QueryEngineModel;
-using QueryEngineModel.AST;
+using QueryEngineCore.Contracts;
+using QueryEngineCore.Contracts.AST;
+using QueryEngineCore.Contracts.Errors.Runtime;
 
 namespace QueryEngineInterpreter
 {
-    public class Interpreter
+    public class Interpreter : IInterpreter
     {
         private readonly IAccessible _accessible;
 
@@ -17,13 +18,14 @@ namespace QueryEngineInterpreter
         public IEnumerable<IAccessible> Execute(Query query)
         {
             return ((IEnumerable<IAccessible>) _accessible[query.Source])
-                .Where(i => query.Expression.Evaluate(i))
-                .Select(i =>
+                .Where(a => query.Expression.Evaluate(a))
+                .Select(a =>
                 {
                     var result = new SingleQueryResult();
-                    query.Fields.ToList().ForEach(f => result[f] = i[f]);
+                    query.Fields.ToList().ForEach(f => result[f] = a[f]);
                     return result;
                 })
+                .ToList()
             ;
         }
     }

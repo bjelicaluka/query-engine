@@ -1,7 +1,9 @@
 using System.Linq;
 using NUnit.Framework;
-using QueryEngineModel.AST;
+using QueryEngineCore.Contracts;
+using QueryEngineCore.Contracts.AST;
 using QueryEngineParser;
+using QueryEngineParser.AST;
 using QueryEngineParser.Rules;
 using QueryEngineScanner;
 
@@ -9,8 +11,8 @@ namespace QueryEngineTests.ParserTests
 {
     public class AstTests
     {
-        private Scanner _scanner;
-        private Parser _parser;
+        private IScanner _scanner;
+        private IParser _parser;
 
         [SetUp]
         public void Setup()
@@ -46,7 +48,7 @@ namespace QueryEngineTests.ParserTests
             
             // Assert
             Assert.IsAssignableFrom<Query>(result);
-            Assert.AreEqual(source, ((Query) result).Source);
+            Assert.AreEqual(source, result.Source);
         }
         
         [Test]
@@ -62,7 +64,7 @@ namespace QueryEngineTests.ParserTests
             
             // Assert
             Assert.IsAssignableFrom<Query>(result);
-            Assert.Contains(field, ((Query) result).Fields.ToList());
+            Assert.Contains(field, result.Fields.ToList());
         }
         
         [Test]
@@ -80,10 +82,10 @@ namespace QueryEngineTests.ParserTests
             
             // Assert
             Assert.IsAssignableFrom<Query>(result);
-            Assert.AreEqual(3, ((Query) result).Fields.Count);
-            Assert.Contains(nameField, ((Query) result).Fields.ToList());
-            Assert.Contains(emailField, ((Query) result).Fields.ToList());
-            Assert.Contains(ageField, ((Query) result).Fields.ToList());
+            Assert.AreEqual(3, result.Fields.Count());
+            Assert.Contains(nameField, result.Fields.ToList());
+            Assert.Contains(emailField, result.Fields.ToList());
+            Assert.Contains(ageField, result.Fields.ToList());
         }
         
         [Test]
@@ -101,11 +103,11 @@ namespace QueryEngineTests.ParserTests
             
             // Assert
             Assert.IsAssignableFrom<Query>(result);
-            Assert.NotNull(((Query) result).Expression);
-            Assert.IsAssignableFrom<RelationalExpression>(((Query) result).Expression);
-            Assert.AreEqual(leftOperand, ((RelationalExpression) ((Query) result).Expression).Left.Value);
-            Assert.AreEqual(operation, ((Query) result).Expression.Operation);
-            Assert.AreEqual(rightOperand, ((RelationalExpression) ((Query) result).Expression).Right.Value);
+            Assert.NotNull(result.Expression);
+            Assert.IsAssignableFrom<RelationalExpression>(result.Expression);
+            Assert.AreEqual(leftOperand, ((RelationalExpression) result.Expression).Left.Value);
+            Assert.AreEqual(operation, result.Expression.Operation);
+            Assert.AreEqual(rightOperand, ((RelationalExpression) result.Expression).Right.Value);
         }
         
         [Test]
@@ -123,11 +125,11 @@ namespace QueryEngineTests.ParserTests
             
             // Assert
             Assert.IsAssignableFrom<Query>(result);
-            Assert.NotNull(((Query) result).Expression);
-            Assert.IsAssignableFrom<RelationalExpression>(((Query) result).Expression);
-            Assert.AreEqual(leftOperand, ((RelationalExpression) ((Query) result).Expression).Left.Value);
-            Assert.AreEqual(operation, ((Query) result).Expression.Operation);
-            Assert.AreEqual(rightOperand, ((RelationalExpression) ((Query) result).Expression).Right.Value);
+            Assert.NotNull(result.Expression);
+            Assert.IsAssignableFrom<RelationalExpression>(result.Expression);
+            Assert.AreEqual(leftOperand, ((RelationalExpression) result.Expression).Left.Value);
+            Assert.AreEqual(operation, result.Expression.Operation);
+            Assert.AreEqual(rightOperand, ((RelationalExpression) result.Expression).Right.Value);
         }
         
         [Test]
@@ -143,11 +145,11 @@ namespace QueryEngineTests.ParserTests
             
             // Assert
             Assert.IsAssignableFrom<Query>(result);
-            Assert.NotNull(((Query) result).Expression);
-            Assert.IsAssignableFrom<Expression>(((Query) result).Expression);
-            Assert.IsAssignableFrom<RelationalExpression>(((Expression) ((Query) result).Expression).Left);
-            Assert.AreEqual(logOperation, ((Query) result).Expression.Operation);
-            Assert.IsAssignableFrom<RelationalExpression>(((Expression) ((Query) result).Expression).Right);
+            Assert.NotNull(result.Expression);
+            Assert.IsAssignableFrom<Expression>(result.Expression);
+            Assert.IsAssignableFrom<RelationalExpression>(((Expression) result.Expression).Left);
+            Assert.AreEqual(logOperation, result.Expression.Operation);
+            Assert.IsAssignableFrom<RelationalExpression>(((Expression) result.Expression).Right);
         }
         
         [Test]
@@ -165,14 +167,14 @@ namespace QueryEngineTests.ParserTests
             
             // Assert
             Assert.IsAssignableFrom<Query>(result);
-            Assert.NotNull(((Query) result).Expression);
-            Assert.IsAssignableFrom<Expression>(((Query) result).Expression);
+            Assert.NotNull(result.Expression);
+            Assert.IsAssignableFrom<Expression>(result.Expression);
             
-            Assert.IsAssignableFrom<Expression>(((Expression) ((Query) result).Expression).Left);
-            Assert.AreEqual(secondLogOperation, ((Query) result).Expression.Operation);
-            Assert.IsAssignableFrom<RelationalExpression>(((Expression) ((Query) result).Expression).Right);
+            Assert.IsAssignableFrom<Expression>(((Expression) result.Expression).Left);
+            Assert.AreEqual(secondLogOperation, result.Expression.Operation);
+            Assert.IsAssignableFrom<RelationalExpression>(((Expression) result.Expression).Right);
             
-            var expressionInParentheses = (Expression) ((Expression) ((Query) result).Expression).Left;
+            var expressionInParentheses = (Expression) ((Expression) result.Expression).Left;
             Assert.IsAssignableFrom<RelationalExpression>(expressionInParentheses.Left);
             Assert.AreEqual(firstLogOperation, expressionInParentheses.Operation);
             Assert.IsAssignableFrom<RelationalExpression>(expressionInParentheses.Right);
@@ -193,12 +195,12 @@ namespace QueryEngineTests.ParserTests
             
             // Assert
             Assert.IsAssignableFrom<Query>(result);
-            Assert.NotNull(((Query) result).Expression);
-            Assert.IsAssignableFrom<Expression>(((Query) result).Expression);
-            Assert.IsAssignableFrom<RelationalExpression>(((Expression) ((Query) result).Expression).Left);
-            Assert.AreEqual(firstLogOperation, ((Query) result).Expression.Operation);
-            Assert.IsAssignableFrom<Expression>(((Expression) ((Query) result).Expression).Right);
-            var expressionInParentheses = (Expression) ((Expression) ((Query) result).Expression).Right;
+            Assert.NotNull(result.Expression);
+            Assert.IsAssignableFrom<Expression>(result.Expression);
+            Assert.IsAssignableFrom<RelationalExpression>(((Expression) result.Expression).Left);
+            Assert.AreEqual(firstLogOperation, result.Expression.Operation);
+            Assert.IsAssignableFrom<Expression>(((Expression) result.Expression).Right);
+            var expressionInParentheses = (Expression) ((Expression) result.Expression).Right;
             Assert.IsAssignableFrom<RelationalExpression>(expressionInParentheses.Left);
             Assert.AreEqual(secondLogOperation, expressionInParentheses.Operation);
             Assert.IsAssignableFrom<RelationalExpression>(expressionInParentheses.Right);

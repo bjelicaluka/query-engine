@@ -1,7 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using QueryEngineModel.AST;
-using QueryEngineModel.Tokens;
+using QueryEngineCore.Contracts.AST;
+using QueryEngineCore.Contracts.Rules;
+using QueryEngineCore.Contracts.Tokens;
+using QueryEngineParser.AST;
 using QueryEngineParser.Utils;
 
 namespace QueryEngineParser.Rules
@@ -25,13 +27,14 @@ namespace QueryEngineParser.Rules
                 Index = childMatch.Index + 2 + matchedExpression.Index,
                 Value = new Expression
                 {
-                    Left = (ExpressionBase) matchedExpression.Value,
+                    Left = (Evaluable) matchedExpression.Value,
                     Operation = tokenList[0].Value,
-                    Right = (ExpressionBase) childMatch.Value
+                    Right = (Evaluable) childMatch.Value
                 }
             };
         }
 
+        // Expression
         private Match MatchExpression(IEnumerable<Token> tokens)
         {
             var tokenList = tokens.ToList();
@@ -104,9 +107,9 @@ namespace QueryEngineParser.Rules
                 Index = relExpressionMatch.Index + logOpMatch.Index + expressionMatch.Index + 2,
                 Value = new Expression
                 {
-                    Left = (ExpressionBase) relExpressionMatch.Value,
+                    Left = (Evaluable) relExpressionMatch.Value,
                     Operation = ((Token) logOpMatch.Value).Value,
-                    Right = (ExpressionBase) expressionMatch.Value
+                    Right = (Evaluable) expressionMatch.Value
                 }
             };
         }

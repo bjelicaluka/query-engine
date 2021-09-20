@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using QueryEngineModel.Tokens;
+using QueryEngineCore.Contracts.Rules;
+using QueryEngineCore.Contracts.Tokens;
 
 namespace QueryEngineParser.Rules
 {
@@ -14,6 +14,7 @@ namespace QueryEngineParser.Rules
             _tokenType = tokenType;
         }
 
+        // TOKEN
         public virtual Match Match(IEnumerable<Token> tokens)
         {
             var tokenList = tokens.ToList();

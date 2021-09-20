@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using QueryEngineModel.Tokens;
-using QueryEngineParser.Rules;
+using QueryEngineCore.Contracts.Rules;
+using QueryEngineCore.Contracts.Tokens;
 
 namespace QueryEngineParser.Utils
 {

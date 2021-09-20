@@ -1,10 +1,12 @@
 ﻿using System.Collections.Generic;
-using QueryEngineModel.Tokens;
-using QueryEngineParser.Rules;
+using QueryEngineCore.Contracts;
+using QueryEngineCore.Contracts.AST;
+using QueryEngineCore.Contracts.Rules;
+using QueryEngineCore.Contracts.Tokens;
 
 namespace QueryEngineParser
 {
-    public class Parser
+    public class Parser : IParser
     {
         private readonly IMatchable _rule;
         public Parser(IMatchable rule)
@@ -12,9 +14,9 @@ namespace QueryEngineParser
             _rule = rule;
         }
         
-        public object Parse(IEnumerable<Token> tokens)
+        public Query Parse(IEnumerable<Token> tokens)
         {
-            return _rule.Match(tokens).Value;
+            return (Query) _rule.Match(tokens).Value;
         }
     }
 }

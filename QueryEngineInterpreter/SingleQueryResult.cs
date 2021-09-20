@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using QueryEngineInterpreter.Errors.Runtime;
-using QueryEngineModel;
+using QueryEngineCore.Contracts;
+using QueryEngineCore.Contracts.Errors.Runtime;
 
 namespace QueryEngineInterpreter
 {

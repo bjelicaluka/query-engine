@@ -5,8 +5,8 @@
     </PropertyGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\QueryEngineCore\QueryEngineCore.csproj" />
       <ProjectReference Include="..\QueryEngineModel\QueryEngineModel.csproj" />
-      <ProjectReference Include="..\QueryEngine\QueryEngine.csproj" />
     </ItemGroup>
 
 </Project>

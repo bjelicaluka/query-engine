@@ -1,7 +1,8 @@
 using System.Linq;
 using NUnit.Framework;
+using QueryEngineCore.Contracts;
+using QueryEngineCore.Contracts.Errors.Syntax;
 using QueryEngineParser;
-using QueryEngineParser.Errors.Syntax;
 using QueryEngineParser.Rules;
 using QueryEngineScanner;
 
@@ -9,8 +10,8 @@ namespace QueryEngineTests.ParserTests
 {
     public class ParseTests
     {
-        private Scanner _scanner;
-        private Parser _parser;
+        private IScanner _scanner;
+        private IParser _parser;
 
         [SetUp]
         public void Setup()

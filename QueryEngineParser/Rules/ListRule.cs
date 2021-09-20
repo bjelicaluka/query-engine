@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using QueryEngineModel.Tokens;
+using QueryEngineCore.Contracts.Rules;
+using QueryEngineCore.Contracts.Tokens;
 using QueryEngineParser.Utils;
 
 namespace QueryEngineParser.Rules
@@ -8,6 +9,7 @@ namespace QueryEngineParser.Rules
     public class ListRule : IMatchable
     {
 
+        // Id COMMA List
         public Match Match(IEnumerable<Token> tokens)
         {
             var tokenList = tokens.ToList();
@@ -31,6 +33,7 @@ namespace QueryEngineParser.Rules
             return idMatch;
         }
 
+        // Id
         private static Match MatchId(IEnumerable<Token> tokens)
         {
             var idMatch = new Rule(TokenType.Id).Match(tokens);

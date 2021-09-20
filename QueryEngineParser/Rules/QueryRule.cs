@@ -1,14 +1,16 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
-using QueryEngineModel.AST;
-using QueryEngineModel.Tokens;
-using QueryEngineParser.Errors.Syntax;
+using QueryEngineCore.Contracts.AST;
+using QueryEngineCore.Contracts.Errors.Syntax;
+using QueryEngineCore.Contracts.Rules;
+using QueryEngineCore.Contracts.Tokens;
 using QueryEngineParser.Utils;
 
 namespace QueryEngineParser.Rules
 {
     public class QueryRule : IMatchable
     {
+        // from Source where Expression select List
         public Match Match(IEnumerable<Token> tokens)
         {
             var tokenList = tokens.ToList();
@@ -47,7 +49,7 @@ namespace QueryEngineParser.Rules
                 Value = new Query
                 {
                     Source = (string) sourceMatch.Value,
-                    Expression = (ExpressionBase) expressionMatch.Value,
+                    Expression = (Evaluable) expressionMatch.Value,
                     Fields = (IList<string>) fieldsMatch.Value
                 }
             };
