@@ -5,7 +5,6 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\QueryEngineModel\QueryEngineModel.csproj" />
     </ItemGroup>
 
 </Project>

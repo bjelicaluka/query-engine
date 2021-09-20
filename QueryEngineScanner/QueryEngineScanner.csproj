@@ -6,7 +6,6 @@
 
     <ItemGroup>
       <ProjectReference Include="..\QueryEngineCore\QueryEngineCore.csproj" />
-      <ProjectReference Include="..\QueryEngineModel\QueryEngineModel.csproj" />
     </ItemGroup>
 
 </Project>
