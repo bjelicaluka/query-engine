@@ -5,6 +5,6 @@ namespace QueryEngineCore.Contracts.Rules
 {
     public interface IMatchable
     {
-        Match Match(IEnumerable<Token> tokens);
+        Match Match(IList<Token> tokens, int index = 0);
     }
 }

@@ -2,7 +2,6 @@
 using System.Linq;
 using QueryEngineCore.Contracts.Rules;
 using QueryEngineCore.Contracts.Tokens;
-using QueryEngineParser.Utils;
 
 namespace QueryEngineParser.Rules
 {
@@ -10,33 +9,28 @@ namespace QueryEngineParser.Rules
     {
 
         // Id COMMA List
-        public Match Match(IEnumerable<Token> tokens)
+        public Match Match(IList<Token> tokens, int index)
         {
-            var tokenList = tokens.ToList();
             
-            var idMatch = MatchId(tokenList);
+            var idMatch = MatchId(tokens, index);
             if(idMatch.Index == -1)
                 return new Match { Index = -1 };
-            tokenList = ListUtils.EatTokens(idMatch, tokenList);
-            
-            if (tokenList.Any() && tokenList[0].Type == TokenType.Comma)
-            {
-                var value = (IList<string>) Match(ListUtils.EatTokens(new Match {Index = 0 }, tokenList))
-                    .Value;
-                return new Match
-                {
-                    Index = idMatch.Index + 1,
-                    Value = value.Union((IList<string>) idMatch.Value).ToList()
-                };
-            }
 
-            return idMatch;
+            if (idMatch.Index >= tokens.Count - 1 || tokens[idMatch.Index + 1].Type != TokenType.Comma) return idMatch;
+            
+            var childMatch = Match(tokens, idMatch.Index + 2);
+            return new Match
+            {
+                Index = childMatch.Index,
+                Value = ((IList<string>) childMatch.Value).Union((IList<string>) idMatch.Value).ToList()
+            };
+
         }
 
         // Id
-        private static Match MatchId(IEnumerable<Token> tokens)
+        private static Match MatchId(IList<Token> tokens, int index)
         {
-            var idMatch = new Rule(TokenType.Id).Match(tokens);
+            var idMatch = new Rule(TokenType.Id).Match(tokens, index);
             if(idMatch.Index == -1)
                 return new Match{ Index = -1 };
             return new Match

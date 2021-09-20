@@ -11,9 +11,9 @@ namespace QueryEngineParser.Rules
         }
         
         // Id
-        public override Match Match(IEnumerable<Token> tokens)
+        public override Match Match(IList<Token> tokens, int index)
         {
-            var result = base.Match(tokens);
+            var result = base.Match(tokens, index);
             if(result.Index == -1)
                 return new Match { Index = -1};
             return new Match

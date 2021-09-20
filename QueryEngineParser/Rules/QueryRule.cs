@@ -1,46 +1,37 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using QueryEngineCore.Contracts.AST;
 using QueryEngineCore.Contracts.Errors.Syntax;
 using QueryEngineCore.Contracts.Rules;
 using QueryEngineCore.Contracts.Tokens;
-using QueryEngineParser.Utils;
 
 namespace QueryEngineParser.Rules
 {
     public class QueryRule : IMatchable
     {
         // from Source where Expression select List
-        public Match Match(IEnumerable<Token> tokens)
+        public Match Match(IList<Token> tokens, int index)
         {
-            var tokenList = tokens.ToList();
-            
-            var fromMatch = new Rule(TokenType.From).Match(tokenList);
+            var fromMatch = new Rule(TokenType.From).Match(tokens, index);
             if(fromMatch.Index == -1)
                 throw new MissingFromSyntaxError();
-            tokenList = ListUtils.EatTokens(fromMatch, tokenList);
             
-            var sourceMatch = new SourceRule().Match(tokenList);
+            var sourceMatch = new SourceRule().Match(tokens, fromMatch.Index + 1);
             if(sourceMatch.Index == -1)
                 throw new MissingSourceSyntaxError();
-            tokenList = ListUtils.EatTokens(sourceMatch, tokenList);
             
-            var whereMatch = new Rule(TokenType.Where).Match(tokenList);
+            var whereMatch = new Rule(TokenType.Where).Match(tokens, sourceMatch.Index + 1);
             if(whereMatch.Index == -1)
                 throw new MissingWhereSyntaxError();
-            tokenList = ListUtils.EatTokens(whereMatch, tokenList);
             
-            var expressionMatch = new ExpressionRule().Match(tokenList);
+            var expressionMatch = new ExpressionRule().Match(tokens, whereMatch.Index + 1);
             if(expressionMatch.Index == -1)
                 throw new MissingExpressionSyntaxError();
-            tokenList = ListUtils.EatTokens(expressionMatch, tokenList);
             
-            var selectMatch = new Rule(TokenType.Select).Match(tokenList);
+            var selectMatch = new Rule(TokenType.Select).Match(tokens, expressionMatch.Index + 1);
             if(selectMatch.Index == -1)
                 throw new MissingSelectSyntaxError();
-            tokenList = ListUtils.EatTokens(selectMatch, tokenList);
             
-            var fieldsMatch = new ListRule().Match(tokenList);
+            var fieldsMatch = new ListRule().Match(tokens, selectMatch.Index + 1);
             if(fieldsMatch.Index == -1)
                 throw new MissingFieldsSyntaxError();
             

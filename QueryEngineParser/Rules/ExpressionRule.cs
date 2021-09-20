@@ -1,55 +1,49 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using QueryEngineCore.Contracts.AST;
 using QueryEngineCore.Contracts.Rules;
 using QueryEngineCore.Contracts.Tokens;
 using QueryEngineParser.AST;
-using QueryEngineParser.Utils;
 
 namespace QueryEngineParser.Rules
 {
     public class ExpressionRule : IMatchable
     {
-        public Match Match(IEnumerable<Token> tokens)
+        public Match Match(IList<Token> tokens, int index)
         {
-            var tokenList = tokens.ToList();
-
-            var matchedExpression = MatchExpression(tokenList);
+            var matchedExpression = MatchExpression(tokens, index);
             if (matchedExpression.Index == -1)
                 return new Match {Index = -1};
-            tokenList = ListUtils.EatTokens(matchedExpression, tokenList);
 
-            if (!tokenList.Any() || tokenList[0].Type != TokenType.LogOp) return matchedExpression;
+            if (matchedExpression.Index >= tokens.Count - 1 ||
+                tokens[matchedExpression.Index + 1].Type != TokenType.LogOp) return matchedExpression;
             
-            var childMatch = Match(ListUtils.EatTokens(new Match {Index = 0}, tokenList));
+            var childMatch = Match(tokens, matchedExpression.Index + 2);
             return new Match
             {
-                Index = childMatch.Index + 2 + matchedExpression.Index,
+                Index = childMatch.Index,
                 Value = new Expression
                 {
                     Left = (Evaluable) matchedExpression.Value,
-                    Operation = tokenList[0].Value,
+                    Operation = tokens[matchedExpression.Index + 1].Value,
                     Right = (Evaluable) childMatch.Value
                 }
             };
         }
 
         // Expression
-        private Match MatchExpression(IEnumerable<Token> tokens)
+        private Match MatchExpression(IList<Token> tokens, int index)
         {
-            var tokenList = tokens.ToList();
-            
-            var parenthesesMatch = MatchWithParentheses(tokenList);
+            var parenthesesMatch = MatchWithParentheses(tokens, index);
             if (parenthesesMatch.Index != -1)
             {
                 return parenthesesMatch;
             }
-            var expressionMatch = MatchWithLogOperation(tokenList);
+            var expressionMatch = MatchWithLogOperation(tokens, index);
             if (expressionMatch.Index != -1)
             {
                 return expressionMatch;
             }
-            var relationalExpressionMatch = MatchRelationalExpression(tokenList);
+            var relationalExpressionMatch = MatchRelationalExpression(tokens, index);
             if (relationalExpressionMatch.Index != -1)
             {
                 return relationalExpressionMatch;
@@ -58,53 +52,46 @@ namespace QueryEngineParser.Rules
         }
 
         // (Expression)
-        private Match MatchWithParentheses(IEnumerable<Token> tokens)
+        private Match MatchWithParentheses(IList<Token> tokens, int index)
         {
-            var tokenList = tokens.ToList();
             
-            var lparenMatch = new Rule(TokenType.LParen).Match(tokenList);
+            var lparenMatch = new Rule(TokenType.LParen).Match(tokens, index);
             if(lparenMatch.Index == -1)
                 return new Match{ Index = -1 };
-            tokenList = ListUtils.EatTokens(lparenMatch, tokenList);
             
-            var expressionMatch = Match(tokenList);
+            var expressionMatch = Match(tokens, lparenMatch.Index + 1);
             if(expressionMatch.Index == -1)
                 return new Match{ Index = -1 };
-            tokenList = ListUtils.EatTokens(expressionMatch, tokenList);
             
-            var rparenMatch = new Rule(TokenType.RParen).Match(tokenList);
+            var rparenMatch = new Rule(TokenType.RParen).Match(tokens, expressionMatch.Index + 1);
             if(rparenMatch.Index == -1)
                 return new Match{ Index = -1 };
             
             return new Match
             {
-                Index = lparenMatch.Index + expressionMatch.Index + rparenMatch.Index + 2,
+                Index = rparenMatch.Index,
                 Value = expressionMatch.Value
             };
         }
         
         // RelationalExpression LogOp Expression
-        private Match MatchWithLogOperation(IEnumerable<Token> tokens)
+        private Match MatchWithLogOperation(IList<Token> tokens, int index)
         {
-            var tokenList = tokens.ToList();
-            
-            var relExpressionMatch = new RelationalExpressionRule().Match(tokenList);
+            var relExpressionMatch = new RelationalExpressionRule().Match(tokens, index);
             if(relExpressionMatch.Index == -1)
                 return new Match{ Index = -1 };
-            tokenList = ListUtils.EatTokens(relExpressionMatch, tokenList);
             
-            var logOpMatch = new Rule(TokenType.LogOp).Match(tokenList);
+            var logOpMatch = new Rule(TokenType.LogOp).Match(tokens, relExpressionMatch.Index + 1);
             if(logOpMatch.Index == -1)
                 return new Match{ Index = -1 };
-            tokenList = ListUtils.EatTokens(logOpMatch, tokenList);
             
-            var expressionMatch = Match(tokenList);
+            var expressionMatch = Match(tokens, logOpMatch.Index + 1);
             if(expressionMatch.Index == -1)
                 return new Match{ Index = -1 };
 
             return new Match
             {
-                Index = relExpressionMatch.Index + logOpMatch.Index + expressionMatch.Index + 2,
+                Index = expressionMatch.Index,
                 Value = new Expression
                 {
                     Left = (Evaluable) relExpressionMatch.Value,
@@ -115,9 +102,9 @@ namespace QueryEngineParser.Rules
         }
         
         // RelationalExpression
-        private Match MatchRelationalExpression(IEnumerable<Token> tokens)
+        private Match MatchRelationalExpression(IList<Token> tokens, int index)
         {
-            var relExpressionMatch = new RelationalExpressionRule().Match(tokens);
+            var relExpressionMatch = new RelationalExpressionRule().Match(tokens, index);
             return new Match
             {
                 Index = relExpressionMatch.Index,

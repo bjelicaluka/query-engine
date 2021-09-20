@@ -15,18 +15,15 @@ namespace QueryEngineParser.Rules
         }
 
         // TOKEN
-        public virtual Match Match(IEnumerable<Token> tokens)
+        public virtual Match Match(IList<Token> tokens, int index)
         {
-            var tokenList = tokens.ToList();
-            
-            const int index = 0;
-            if(index >= tokenList.Count || tokenList[index].Type != _tokenType)
+            if(index >= tokens.Count || tokens[index].Type != _tokenType)
                 return new Match { Index = -1 };
             
             return new Match()
             {
                 Index = index,
-                Value = tokenList[index]
+                Value = tokens[index]
             };
         }
     }

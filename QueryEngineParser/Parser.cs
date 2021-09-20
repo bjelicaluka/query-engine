@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using QueryEngineCore.Contracts;
 using QueryEngineCore.Contracts.AST;
 using QueryEngineCore.Contracts.Rules;
@@ -16,7 +17,7 @@ namespace QueryEngineParser
         
         public Query Parse(IEnumerable<Token> tokens)
         {
-            return (Query) _rule.Match(tokens).Value;
+            return (Query) _rule.Match(tokens.ToList()).Value;
         }
     }
 }
